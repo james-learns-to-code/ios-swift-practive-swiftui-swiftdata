@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:StarwarsServer">
+   </FileRef>
+   <FileRef
+      location = "group:Starwars/Starwars.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:StarwarsMVVM/StarwarsMVVM.xcodeproj">
+   </FileRef>
+</Workspace>
