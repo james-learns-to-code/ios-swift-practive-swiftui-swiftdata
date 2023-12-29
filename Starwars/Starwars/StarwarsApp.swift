@@ -1,6 +1,6 @@
 //
-//  StartwarsApp.swift
-//  Startwars
+//  StarwarsApp.swift
+//  Starwars
 //
 //  Created by Dongseok Lee on 12/29/23.
 //
@@ -12,7 +12,7 @@ import SwiftData
  This App is demonstrate SwiftUI + SwiftData + REST API integration
  */
 @main
-struct StartwarsApp: App {
+struct StarwarsApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
