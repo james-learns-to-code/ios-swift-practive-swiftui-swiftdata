@@ -16,4 +16,7 @@
    <FileRef
       location = "group:StarwarsModelActor/StarwarsModelActor.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:StarwarsMVVMModelActor/StarwarsMVVMModelActor.xcodeproj">
+   </FileRef>
 </Workspace>
