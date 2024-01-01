@@ -29,9 +29,7 @@ struct StarwarsView: View {
                 }
             }
         }.task {
-            if await viewModel.hasFilms() == false {
-                await viewModel.loadFilms()
-            }
+            await viewModel.loadFilmsIfEmpty()
         }
     }
     

@@ -40,9 +40,7 @@ struct StarwarsView: View {
                 }
             }
         }.task {
-            if films.isEmpty {
-                await modelActor.loadFilms()
-            }
+            await modelActor.loadFilmsIfEmpty()
         }
     }
     

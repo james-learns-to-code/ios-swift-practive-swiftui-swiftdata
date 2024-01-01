@@ -11,7 +11,11 @@ import StarwarsServer
 
 @ModelActor
 actor StarwarsModelActor {
-    func loadFilms() async {
+    func loadFilmsIfEmpty() async {
+        let films = fetchFilms()
+
+        guard films.isEmpty else { return }
+        
         do {
             let response = try await StarwarsNetworkManager.shared.requestFilmList()
             let films = response.results?.compactMap { $0.asModelData() } ?? []

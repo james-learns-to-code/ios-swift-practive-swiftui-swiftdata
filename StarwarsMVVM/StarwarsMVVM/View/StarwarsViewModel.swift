@@ -22,13 +22,11 @@ final class StarwarsViewModel: ObservableObject {
         self.modelContext = modelContext
     }
     
-    func hasFilms() async -> Bool {
+    func loadFilmsIfEmpty() async {
         fetchFilmData()
+
+        guard films.isEmpty else { return }
         
-        return films.count > 0
-    }
-    
-    func loadFilms() async {
         do {
             let response = try await StarwarsNetworkManager.shared.requestFilmList()
             let films = response.results?.compactMap { $0.asModelData() } ?? []

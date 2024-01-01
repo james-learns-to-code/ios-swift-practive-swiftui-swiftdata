@@ -36,13 +36,13 @@ struct StarwarsView: View {
                 }
             }
         }.task {
-            if films.isEmpty {
-                await loadFilms()
-            }
+            await loadFilmsIfEmpty()
         }
     }
     
-    private func loadFilms() async {
+    private func loadFilmsIfEmpty() async {
+        guard films.isEmpty else { return }
+
         do {
             let response = try await StarwarsNetworkManager.shared.requestFilmList()
             let films = response.results?.compactMap { $0.asModelData() } ?? []
