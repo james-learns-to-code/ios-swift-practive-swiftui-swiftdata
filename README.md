@@ -18,7 +18,7 @@ Demonstrates a ViewModel-based approach using SwiftData and a REST API.
 In StarwarsMVVM, the approach involves manually fetching SwiftData instead of utilizing @Query annotations for ViewModel usage. This can lead to potential issues, including:
 
 - Redundancy: Manually syncing data between the database and ViewModel can introduce redundancy and increase the likelihood of inconsistencies.
-- Manual Database Management: Requires careful manual handling of database consistency to prevent potential app crashes.
+- Manual Database Management: Requires careful manual handling of database consistency to prevent potential app crashes. This risk could reducing by using memory-only data container.
 
 ### Conclusion
 SwiftData empowers developers to create efficient and maintainable data-driven SwiftUI apps without relying solely on ViewModels. By leveraging its query capabilities and exploring alternative patterns like transformers and repositories, we can achieve well-structured and simplified code that aligns with Swift's evolution.
