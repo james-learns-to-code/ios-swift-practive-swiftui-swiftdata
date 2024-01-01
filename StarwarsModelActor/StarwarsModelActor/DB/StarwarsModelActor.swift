@@ -6,8 +6,11 @@
 //
 
 import Foundation
+import os.log
 import SwiftData
 import StarwarsServer
+
+private let logger = Logger(subsystem: "com.goodeffect.Starwars", category: "StarwarsView")
 
 @ModelActor
 actor StarwarsModelActor {
@@ -35,7 +38,7 @@ actor StarwarsModelActor {
             let descriptor = FetchDescriptor<StarwarsFilm>()
             return try modelContext.fetch(descriptor)
         } catch {
-            logger.error("Fetch failed")
+            logger.error("Fetch failed: \(error)")
             return []
         }
     }

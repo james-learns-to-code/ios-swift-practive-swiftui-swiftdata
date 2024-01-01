@@ -10,7 +10,7 @@ import SwiftUI
 import SwiftData
 import StarwarsServer
 
-let logger = Logger(subsystem: "com.goodeffect.Starwars", category: "StarwarsViewModel")
+private let logger = Logger(subsystem: "com.goodeffect.Starwars", category: "StarwarsViewModel")
 
 @MainActor
 final class StarwarsViewModel: ObservableObject {
@@ -42,7 +42,7 @@ final class StarwarsViewModel: ObservableObject {
             let descriptor = FetchDescriptor<StarwarsFilm>(sortBy: [SortDescriptor(\.episodeId)])
             films = try modelContext.fetch(descriptor)
         } catch {
-            logger.error("Fetch failed")
+            logger.error("Fetch failed: \(error)")
         }
     }
     

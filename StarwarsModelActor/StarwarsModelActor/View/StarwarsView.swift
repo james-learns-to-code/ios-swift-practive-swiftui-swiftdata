@@ -5,11 +5,8 @@
 //  Created by Dongseok Lee on 12/29/23.
 //
 
-import os.log
 import SwiftUI
 import SwiftData
-
-let logger = Logger(subsystem: "com.goodeffect.Starwars", category: "StarwarsView")
 
 struct StarwarsView: View {
     @Environment(\.modelContext) private var modelContext

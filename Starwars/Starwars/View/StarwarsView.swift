@@ -10,7 +10,7 @@ import SwiftUI
 import SwiftData
 import StarwarsServer
 
-let logger = Logger(subsystem: "com.goodeffect.Starwars", category: "StarwarsView")
+private let logger = Logger(subsystem: "com.goodeffect.Starwars", category: "StarwarsView")
 
 struct StarwarsView: View {
     @Environment(\.modelContext) private var modelContext
