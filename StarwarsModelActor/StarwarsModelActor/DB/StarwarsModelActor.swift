@@ -1,29 +1,21 @@
 //
-//  StarwarsViewModel.swift
-//  StarwarsMVVM
+//  StarwarsModelActor.swift
+//  StarwarsModelActor
 //
-//  Created by Dongseok Lee on 12/30/23.
+//  Created by Dongseok Lee on 1/1/24.
 //
 
+import Foundation
 import os.log
-import SwiftUI
 import SwiftData
 import StarwarsServer
 
-private let logger = Logger(subsystem: "com.goodeffect.Starwars", category: "StarwarsViewModel")
+private let logger = Logger(subsystem: "com.goodeffect.Starwars", category: "StarwarsView")
 
-@MainActor
-final class StarwarsViewModel: ObservableObject {
-    private let modelContext: ModelContext
-    
-    @Published var films: [StarwarsFilm] = []
-    
-    init(modelContext: ModelContext) {
-        self.modelContext = modelContext
-    }
-    
+@ModelActor
+actor StarwarsModelActor {
     func loadFilmsIfEmpty() async {
-        fetchFilmData()
+        let films = fetchFilms()
 
         guard films.isEmpty else { return }
         
@@ -31,58 +23,54 @@ final class StarwarsViewModel: ObservableObject {
             let response = try await StarwarsNetworkManager.shared.requestFilmList()
             let films = response.results?.compactMap { $0.asModelData() } ?? []
             
-            updateFilms(films)
+            films.forEach { film in
+                modelContext.insert(film)
+            }
+            
+            save()
         } catch {
             logger.error("An error occurred: \(error)")
         }
     }
     
-    private func fetchFilmData() {
+    private func fetchFilms() -> [StarwarsFilm] {
         do {
-            let descriptor = FetchDescriptor<StarwarsFilm>(sortBy: [SortDescriptor(\.episodeId)])
-            films = try modelContext.fetch(descriptor)
+            let descriptor = FetchDescriptor<StarwarsFilm>()
+            return try modelContext.fetch(descriptor)
         } catch {
             logger.error("Fetch failed: \(error)")
+            return []
         }
     }
     
-    private func updateFilms(_ films: [StarwarsFilm]) {
-        films.forEach { film in
-            modelContext.insert(film)
-        }
-        
-        updateModelData()
-    }
-    
-    private func updateModelData() {
+    private func save() {
         do {
             try modelContext.save()
-            
-            fetchFilmData()
-            
         } catch {
             logger.error("An error occurred: \(error)")
         }
     }
-    
-    func addNewFilm() {
+
+    func addNewFilm() async {
+        let films = fetchFilms()
         let maxId = films.map(\.episodeId).max()
         let nextId = (maxId ?? 0) + 1
         let newFilm = StarwarsFilm(title: "New", episodeId: nextId, director: "Unknown")
         modelContext.insert(newFilm)
-        
-        updateModelData()
-        
+
+        save()
+
         // For demonstration. Not actually sync with server
     }
     
-    func deleteFilms(offsets: IndexSet) {
+    func deleteFilms(offsets: IndexSet) async {
+        let films = fetchFilms()
         offsets.forEach { index in
             modelContext.delete(films[index])
         }
         
-        updateModelData()
-        
+        save()
+
         // For demonstration. Not actually sync with server
     }
 }

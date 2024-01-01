@@ -34,14 +34,14 @@ struct StarwarsView: View {
     }
     
     private func addNewFilm() {
-        withAnimation {
-            viewModel.addNewFilm()
+        Task {
+            await viewModel.addNewFilm()
         }
     }
     
     private func deleteFilms(offsets: IndexSet) {
-        withAnimation {
-            viewModel.deleteFilms(offsets: offsets)
+        Task {
+            await viewModel.deleteFilms(offsets: offsets)
         }
     }
 }

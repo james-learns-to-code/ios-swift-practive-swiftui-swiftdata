@@ -6,15 +6,23 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct StarwarsView: View {
-    @StateObject var viewModel: StarwarsViewModel
+    @Environment(\.modelContext) private var modelContext
+        
+    private var modelActor: StarwarsModelActor {
+        StarwarsModelActor(modelContainer: modelContext.container)
+    }
+
+    @Query(sort: \StarwarsFilm.episodeId) private var films: [StarwarsFilm]
     
     var body: some View {
         NavigationView {
             List {
-                ForEach(viewModel.films) { film in
+                ForEach(films) { film in
                     Text(film.title + " " + film.director)
+                        .animation(.easeInOut)
                 }
                 .onDelete(perform: deleteFilms)
             }
@@ -29,19 +37,19 @@ struct StarwarsView: View {
                 }
             }
         }.task {
-            await viewModel.loadFilmsIfEmpty()
+            await modelActor.loadFilmsIfEmpty()
         }
     }
     
     private func addNewFilm() {
-        withAnimation {
-            viewModel.addNewFilm()
+        Task {
+            await modelActor.addNewFilm()
         }
     }
     
     private func deleteFilms(offsets: IndexSet) {
-        withAnimation {
-            viewModel.deleteFilms(offsets: offsets)
+        Task {
+            await modelActor.deleteFilms(offsets: offsets)
         }
     }
 }
