@@ -8,9 +8,6 @@
 import SwiftUI
 import SwiftData
 
-/*
- This App is demonstrate SwiftUI + SwiftData + REST API integration
- */
 @main
 struct StarwarsApp: App {
     var body: some Scene {
