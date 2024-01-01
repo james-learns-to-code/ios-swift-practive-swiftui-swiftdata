@@ -12,7 +12,7 @@ Therefore, we create two apps: one using a pure SwiftData approach and the other
 ### Starwars
 Demonstrates a pure SwiftData implementation, integrating with a REST API.
 
-### StarwarsMVVM - ViewModel + SwiftData + REST API
+### StarwarsMVVM
 Demonstrates a ViewModel-based approach using SwiftData and a REST API.
 
 In StarwarsMVVM, the approach involves manually fetching SwiftData instead of utilizing @Query annotations for ViewModel usage. This can lead to potential issues, including:
