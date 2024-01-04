@@ -14,11 +14,7 @@ private let logger = Logger(subsystem: "com.goodeffect.Starwars", category: "Sta
 
 @ModelActor
 actor StarwarsModelActor {
-    func loadFilmsIfEmpty() async {
-        let films = fetchFilms()
-
-        guard films.isEmpty else { return }
-        
+    func loadFilms() async {
         do {
             let response = try await StarwarsNetworkManager.shared.requestFilmList()
             let films = response.results?.compactMap { $0.asModelData() } ?? []
@@ -32,17 +28,7 @@ actor StarwarsModelActor {
             logger.error("An error occurred: \(error)")
         }
     }
-    
-    private func fetchFilms() -> [StarwarsFilm] {
-        do {
-            let descriptor = FetchDescriptor<StarwarsFilm>(sortBy: [SortDescriptor(\.episodeId)])
-            return try modelContext.fetch(descriptor)
-        } catch {
-            logger.error("Fetch failed: \(error)")
-            return []
-        }
-    }
-    
+        
     private func save() {
         do {
             try modelContext.save()
@@ -51,17 +37,14 @@ actor StarwarsModelActor {
         }
     }
 
-    nonisolated func addNewFilm() {
+    nonisolated func addNewFilm(id: Int) {
         Task {
-            await _addNewFilm()
+            await _addNewFilm(id: id)
         }
     }
     
-    private func _addNewFilm() {
-        let films = fetchFilms()
-        let maxId = films.map(\.episodeId).max()
-        let nextId = (maxId ?? 0) + 1
-        let newFilm = StarwarsFilm(title: "New", episodeId: nextId, director: "Unknown")
+    private func _addNewFilm(id: Int) {
+        let newFilm = StarwarsFilm(title: "New", episodeId: id, director: "Unknown")
         
         modelContext.insert(newFilm)
 
@@ -70,16 +53,16 @@ actor StarwarsModelActor {
         // For demonstration. Not actually sync with server
     }
     
-    nonisolated func deleteFilms(offsets: IndexSet) {
+    nonisolated func deleteFilms(ids: [PersistentIdentifier]) {
         Task {
-            await _deleteFilms(offsets: offsets)
+            await _deleteFilms(ids: ids)
         }
     }
     
-    private func _deleteFilms(offsets: IndexSet) {
-        let films = fetchFilms()
-        offsets.forEach { index in
-            modelContext.delete(films[index])
+    private func _deleteFilms(ids: [PersistentIdentifier]) {
+        ids.forEach { id in
+            let model = modelContext.model(for: id)
+            modelContext.delete(model)
         }
 
         save()
