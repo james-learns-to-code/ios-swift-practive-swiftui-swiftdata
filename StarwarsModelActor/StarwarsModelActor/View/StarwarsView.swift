@@ -37,15 +37,20 @@ struct StarwarsView: View {
                 }
             }
         }.task {
-            await modelActor.loadFilmsIfEmpty()
+            if films.isEmpty {
+                await modelActor.loadFilms()
+            }
         }
     }
     
     private func addNewFilm() {
-        modelActor.addNewFilm()
+        let maxId = films.map(\.episodeId).max()
+        let nextId = (maxId ?? 0) + 1
+        modelActor.addNewFilm(id: nextId)
     }
     
     private func deleteFilms(offsets: IndexSet) {
-        modelActor.deleteFilms(offsets: offsets)
+        let ids = offsets.map { films[$0] }.map { $0.persistentModelID }
+        modelActor.deleteFilms(ids: ids)
     }
 }
