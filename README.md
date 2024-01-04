@@ -29,6 +29,8 @@ Demonstrates a pure SwiftData implementation, integrating with a REST API. Using
 
 Although the purporse of ModelActor and ViewModel-based approach differ, their code looks similar.
 
+Due to architectural constraints, the data is not stored in ModelActor, leading to some inconveniences in database-related operations.
+
 ### StarwarsMVVMModelActor
 Demonstrates a ViewModel-based approach using SwiftData and a REST API. Using ModelActor for better consistency.
 
