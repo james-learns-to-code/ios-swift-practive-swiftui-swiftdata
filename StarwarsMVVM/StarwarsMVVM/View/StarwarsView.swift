@@ -16,14 +16,18 @@ struct StarwarsView: View {
                 ForEach(viewModel.films) { film in
                     Text(film.title + " " + film.director)
                 }
-                .onDelete(perform: deleteFilms)
+                .onDelete(perform: { offsets in
+                    deleteFilms(offsets: offsets)
+                })
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     EditButton()
                 }
                 ToolbarItem {
-                    Button(action: addNewFilm) {
+                    Button(action: {
+                        addNewFilm()
+                    }) {
                         Label("Add Item", systemImage: "plus")
                     }
                 }

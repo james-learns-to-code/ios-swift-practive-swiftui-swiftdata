@@ -8,7 +8,7 @@
 import os.log
 import SwiftUI
 import SwiftData
-import StarwarsServer
+@preconcurrency import StarwarsServer
 
 private let logger = Logger(subsystem: "com.goodeffect.Starwars", category: "StarwarsViewModel")
 
