@@ -8,7 +8,7 @@
 import Foundation
 import os.log
 import SwiftData
-import StarwarsServer
+@preconcurrency import StarwarsServer
 
 private let logger = Logger(subsystem: "com.goodeffect.Starwars", category: "StarwarsView")
 
@@ -35,7 +35,7 @@ actor StarwarsModelActor {
     
     private func fetchFilms() -> [StarwarsFilm] {
         do {
-            let descriptor = FetchDescriptor<StarwarsFilm>()
+            let descriptor = FetchDescriptor<StarwarsFilm>(sortBy: [SortDescriptor(\.episodeId)])
             return try modelContext.fetch(descriptor)
         } catch {
             logger.error("Fetch failed: \(error)")
@@ -51,11 +51,18 @@ actor StarwarsModelActor {
         }
     }
 
-    func addNewFilm() async {
+    nonisolated func addNewFilm() {
+        Task {
+            await _addNewFilm()
+        }
+    }
+    
+    private func _addNewFilm() {
         let films = fetchFilms()
         let maxId = films.map(\.episodeId).max()
         let nextId = (maxId ?? 0) + 1
         let newFilm = StarwarsFilm(title: "New", episodeId: nextId, director: "Unknown")
+        
         modelContext.insert(newFilm)
 
         save()
@@ -63,14 +70,20 @@ actor StarwarsModelActor {
         // For demonstration. Not actually sync with server
     }
     
-    func deleteFilms(offsets: IndexSet) async {
+    nonisolated func deleteFilms(offsets: IndexSet) {
+        Task {
+            await _deleteFilms(offsets: offsets)
+        }
+    }
+    
+    private func _deleteFilms(offsets: IndexSet) {
         let films = fetchFilms()
         offsets.forEach { index in
             modelContext.delete(films[index])
         }
-        
-        save()
 
+        save()
+        
         // For demonstration. Not actually sync with server
     }
 }
